@@ -1,0 +1,22 @@
+import sys
+import socket
+import os
+
+# Kill standard cloud synchronization tags
+os.environ["HF_HUB_DISABLE_TELEMETRY"] = "1"
+os.environ["TRANSFORMERS_OFFLINE"] = "1"
+os.environ["HF_DATASETS_OFFLINE"] = "1"
+os.environ["NO_PROXY"] = "localhost,127.0.0.1"
+
+class BlockedNetworkError(RuntimeError): pass
+
+# Intercept and destroy the kernel network socket link
+def safe_socket(*args, **kwargs):
+    raise BlockedNetworkError("❌ Blocked: Unauthorized network breach attempt stopped.")
+socket.socket = safe_socket
+
+# Delete the import capabilities for internet modules
+sys.modules['requests'] = None
+sys.modules['urllib'] = None
+sys.modules['urllib3'] = None
+sys.modules['httpx'] = None
